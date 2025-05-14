@@ -1,0 +1,29 @@
+name: Docker CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main   # Menentukan bahwa workflow berjalan pada push ke branch main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    - name: Setup Docker
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build Docker image
+      run: |
+        docker build -t my-html .
+    
+    - name: Run Docker container
+      run: |
+        docker run -d -p 8081:80 --name html-container my-html
+    
+    - name: Verify the app is running
+      run: |
+        curl http://localhost:8081
